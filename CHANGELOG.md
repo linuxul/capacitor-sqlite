@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [8.1.1](https://github.com/capacitor-community/sqlite/compare/v8.1.0...v8.1.1) (2026-08-06)
+
+
+### Bug Fixes
+
+* **android:** update sqlcipher-android dependency to version 4.17.0 ([#695](https://github.com/capacitor-community/sqlite/issues/695)) ([59871a2](https://github.com/capacitor-community/sqlite/commit/59871a25eb6d91bd4c816b75ea3854a1e8acb136))
+* **ios:** use version range instead of deleted 8.0.0 branch for capacitor-swift-pm ([#698](https://github.com/capacitor-community/sqlite/issues/698)) ([65f3ee0](https://github.com/capacitor-community/sqlite/commit/65f3ee096b75d37b3826acc83a2c2eb8077ca7ac)), closes [#697](https://github.com/capacitor-community/sqlite/issues/697)
+
 ## [8.1.0](https://github.com/capacitor-community/sqlite/compare/v8.0.1...v8.1.0) (2026-03-30)
 
 
