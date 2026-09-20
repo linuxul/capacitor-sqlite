@@ -131,6 +131,10 @@ For easier debugging, there is a Chrome DevTools extension that allows browsing,
   - Chrome Web Store: https://chromewebstore.google.com/detail/jeep-sqlite-browser/ocgeealadeabmhponndjebghfkbfbnch
   - GitHub: https://github.com/pinguluk/jeep-sqlite-browser
 
+## Requirements
+
+This version of the plugin requires the forked Kotlin/Swift Capacitor 8 runtime, iOS 17 or later and Android 13 (API 33) or later.
+
 ## Android Quirks
 
  - In case you get the following error when building your app in Android Studio:
@@ -145,13 +149,13 @@ For easier debugging, there is a Chrome DevTools extension that allows browsing,
 
  - Check/Add the following:
     Gradle JDK version 21
-    Android Gradle Plugin Version 8.7.2
+    Android Gradle Plugin Version 8.13.0
     In variables.gradle
 
       ```
-      minSdkVersion = 23
-      compileSdkVersion = 35
-      targetSdkVersion = 35
+      minSdkVersion = 33
+      compileSdkVersion = 36
+      targetSdkVersion = 36
       ```
     In AndroidManifest.xml
       ```
