@@ -6,7 +6,9 @@ import com.getcapacitor.JSArray
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
+import com.getcapacitor.PluginException
 import com.getcapacitor.PluginMethod
+import com.getcapacitor.PluginThread
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.community.database.sqlite.SQLite.SqliteConfig
 import java.util.Collections
@@ -100,9 +102,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun setEncryptionSecret(call: PluginCall) {
         if (!call.data.has("passphrase")) {
-            val msg = "SetEncryptionSecret: Must provide a passphrase"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("SetEncryptionSecret: Must provide a passphrase")
         }
         val passphrase = call.getString("passphrase")
         val impl = implementation
@@ -126,31 +126,26 @@ public class CapacitorSQLitePlugin : Plugin() {
      *
      * @param call PluginCall
      */
-    @PluginMethod
+    // The whole method runs on the main thread: with biometric authentication, the implementation shows a dialog
+    @PluginMethod(thread = PluginThread.MAIN)
     public fun changeEncryptionSecret(call: PluginCall) {
         if (!call.data.has("passphrase")) {
-            val msg = "SetEncryptionSecret: Must provide a passphrase"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("SetEncryptionSecret: Must provide a passphrase")
         }
         passphrase = call.getString("passphrase")
 
         if (!call.data.has("oldpassphrase")) {
-            val msg = "SetEncryptionSecret: Must provide a oldpassphrase"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("SetEncryptionSecret: Must provide a oldpassphrase")
         }
         oldpassphrase = call.getString("oldpassphrase")
         val impl = implementation
         if (impl != null) {
-            activity.runOnUiThread {
-                try {
-                    impl.changeEncryptionSecret(call, passphrase!!, oldpassphrase!!)
-                    rHandler.retResult(call, null, null)
-                } catch (e: Exception) {
-                    val msg = "ChangeEncryptionSecret: ${e.message}"
-                    rHandler.retResult(call, null, msg)
-                }
+            try {
+                impl.changeEncryptionSecret(call, passphrase!!, oldpassphrase!!)
+                rHandler.retResult(call, null, null)
+            } catch (e: Exception) {
+                val msg = "ChangeEncryptionSecret: ${e.message}"
+                rHandler.retResult(call, null, msg)
             }
         } else {
             rHandler.retResult(call, null, loadMessage)
@@ -188,9 +183,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun checkEncryptionSecret(call: PluginCall) {
         if (!call.data.has("passphrase")) {
-            val msg = "checkEncryptionSecret: Must provide a passphrase"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("checkEncryptionSecret: Must provide a passphrase")
         }
         val passphrase = call.getString("passphrase")
         val impl = implementation
@@ -210,15 +203,11 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun getNCDatabasePath(call: PluginCall) {
         if (!call.data.has("path")) {
-            val msg = "getNCDatabasePath: Must provide a folder path"
-            rHandler.retPath(call, null, msg)
-            return
+            throw PluginException("getNCDatabasePath: Must provide a folder path")
         }
         val folderPath = call.getString("path")
         if (!call.data.has("database")) {
-            val msg = "getNCDatabasePath: Must provide a database name"
-            rHandler.retPath(call, null, msg)
-            return
+            throw PluginException("getNCDatabasePath: Must provide a database name")
         }
         val dbName = call.getString("database")
         val impl = implementation
@@ -244,9 +233,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun createNCConnection(call: PluginCall) {
         if (!call.data.has("databasePath")) {
-            val msg = "CreateNCConnection: Must provide a database path"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("CreateNCConnection: Must provide a database path")
         }
         val impl = implementation
         if (impl != null) {
@@ -273,9 +260,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun createConnection(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "CreateConnection: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("CreateConnection: Must provide a database name")
         }
         val dbName = call.getString("database")
         val dbVersion = call.getInt("version", 1) ?: 1
@@ -287,8 +272,7 @@ public class CapacitorSQLitePlugin : Plugin() {
             if (!modeList.contains(inMode)) {
                 var msg = "CreateConnection: inMode must "
                 msg += "be in ['encryption','secret', 'decryption'] "
-                rHandler.retResult(call, null, msg)
-                return
+                throw PluginException(msg)
             }
         } else {
             inMode = "no-encryption"
@@ -318,9 +302,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun open(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "Open: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("Open: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -347,9 +329,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun close(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "Close: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("Close: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -378,9 +358,7 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("database")) {
-            val msg = "BeginTransaction: Must provide a database name"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("BeginTransaction: Must provide a database name")
         }
         val dbName = call.getString("database")
 
@@ -409,9 +387,7 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("database")) {
-            val msg = "CommitTransaction: Must provide a database name"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("CommitTransaction: Must provide a database name")
         }
         val dbName = call.getString("database")
 
@@ -440,9 +416,7 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("database")) {
-            val msg = "RollbackTransaction: Must provide a database name"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("RollbackTransaction: Must provide a database name")
         }
         val dbName = call.getString("database")
 
@@ -469,8 +443,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isTransactionActive(call: PluginCall) {
         if (!call.data.has("database")) {
-            rHandler.retResult(call, null, "Must provide a database name")
-            return
+            throw PluginException("Must provide a database name")
         }
         val dbName = call.getString("database")
         val impl = implementation
@@ -496,9 +469,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun getUrl(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "GetUrl: Must provide a database name"
-            rHandler.retUrl(call, null, msg)
-            return
+            throw PluginException("GetUrl: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -525,9 +496,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun getVersion(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "GetVersion: Must provide a database name"
-            rHandler.retVersion(call, null, msg)
-            return
+            throw PluginException("GetVersion: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -554,9 +523,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun closeNCConnection(call: PluginCall) {
         if (!call.data.has("databasePath")) {
-            val msg = "CloseNCConnection: Must provide a database path"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("CloseNCConnection: Must provide a database path")
         }
         val dbPath = call.getString("databasePath")
         val impl = implementation
@@ -582,9 +549,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun closeConnection(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "CloseConnection: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("CloseConnection: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -611,21 +576,15 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun checkConnectionsConsistency(call: PluginCall) {
         if (!call.data.has("dbNames")) {
-            val msg = "CheckConnectionsConsistency: Must provide a " + "connection Array"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("CheckConnectionsConsistency: Must provide a " + "connection Array")
         }
         val dbNames = call.getArray("dbNames")
         if (!call.data.has("openModes")) {
-            val msg = "CheckConnectionsConsistency: Must provide a " + "openModes Array"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("CheckConnectionsConsistency: Must provide a " + "openModes Array")
         }
         val openModes = call.getArray("openModes")
         if (dbNames == null || openModes == null) {
-            val msg = "CheckConnectionsConsistency: No dbNames or openModes given"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("CheckConnectionsConsistency: No dbNames or openModes given")
         }
         val impl = implementation
         if (impl != null) {
@@ -650,8 +609,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isDatabase(call: PluginCall) {
         if (!call.data.has("database")) {
-            rHandler.retResult(call, null, "Must provide a database name")
-            return
+            throw PluginException("Must provide a database name")
         }
         val dbName = call.getString("database")
         val impl = implementation
@@ -677,8 +635,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isDatabaseEncrypted(call: PluginCall) {
         if (!call.data.has("database")) {
-            rHandler.retResult(call, null, "Must provide a database name")
-            return
+            throw PluginException("Must provide a database name")
         }
         val dbName = call.getString("database")
         val impl = implementation
@@ -730,8 +687,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isNCDatabase(call: PluginCall) {
         if (!call.data.has("databasePath")) {
-            rHandler.retResult(call, null, "Must provide a database path")
-            return
+            throw PluginException("Must provide a database path")
         }
         val dbPath = call.getString("databasePath")
         val impl = implementation
@@ -757,13 +713,11 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isTableExists(call: PluginCall) {
         if (!call.data.has("database")) {
-            rHandler.retResult(call, null, "Must provide a database name")
-            return
+            throw PluginException("Must provide a database name")
         }
         val dbName = call.getString("database")
         if (!call.data.has("table")) {
-            rHandler.retResult(call, null, "Must provide a table name")
-            return
+            throw PluginException("Must provide a table name")
         }
         val tableName = call.getString("table")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -846,9 +800,7 @@ public class CapacitorSQLitePlugin : Plugin() {
                 call.getArray("dbNameList")
             }
         if (dbList == null) {
-            val msg = "AddSQLiteSuffix: dbNameList not given or empty"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("AddSQLiteSuffix: dbNameList not given or empty")
         }
         val impl = implementation
         if (impl != null) {
@@ -883,9 +835,7 @@ public class CapacitorSQLitePlugin : Plugin() {
                 call.getArray("dbNameList")
             }
         if (dbList == null) {
-            val msg = "deleteOldDatabases: dbNameList not given or empty"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("deleteOldDatabases: dbNameList not given or empty")
         }
         val impl = implementation
         if (impl != null) {
@@ -920,9 +870,7 @@ public class CapacitorSQLitePlugin : Plugin() {
                 call.getArray("dbNameList")
             }
         if (dbList == null) {
-            val msg = "moveDatabasesAndAddSuffix: dbNameList not given or empty"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("moveDatabasesAndAddSuffix: dbNameList not given or empty")
         }
         val impl = implementation
         if (impl != null) {
@@ -949,15 +897,11 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("database")) {
-            val msg = "Execute: Must provide a database name"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("Execute: Must provide a database name")
         }
         val dbName = call.getString("database")
         if (!call.data.has("statements")) {
-            val msg = "Execute: Must provide raw SQL statements"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("Execute: Must provide raw SQL statements")
         }
         val statements = call.getString("statements")
         val transaction = call.getBoolean("transaction", true) ?: true
@@ -989,26 +933,18 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("database")) {
-            val msg = "ExecuteSet: Must provide a database name"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("ExecuteSet: Must provide a database name")
         }
         val dbName = call.getString("database")
         if (!call.data.has("set")) {
-            val msg = "ExecuteSet: Must provide a set of SQL statements"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("ExecuteSet: Must provide a set of SQL statements")
         }
         val set = call.getArray("set")
         if (set == null) {
-            val msg = "ExecuteSet: Must provide a set of SQL statements"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("ExecuteSet: Must provide a set of SQL statements")
         }
         if (set.length() == 0) {
-            val msg = "ExecuteSet: Must provide a non-empty set of SQL statements"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("ExecuteSet: Must provide a non-empty set of SQL statements")
         }
         for (i in 0 until set.length()) {
             // names() is null for an empty object; the Java original threw a NullPointerException here too
@@ -1018,8 +954,7 @@ public class CapacitorSQLitePlugin : Plugin() {
                 if (key != "statement" && key != "values") {
                     var msg = "ExecuteSet: Must provide a set as Array of {statement,"
                     msg += "values}"
-                    rHandler.retChanges(call, retRes, msg)
-                    return
+                    throw PluginException(msg)
                 }
             }
         }
@@ -1051,27 +986,19 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("database")) {
-            val msg = "Run: Must provide a database name"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("Run: Must provide a database name")
         }
         val dbName = call.getString("database")
         if (!call.data.has("statement")) {
-            val msg = "Run: Must provide a SQL statement"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("Run: Must provide a SQL statement")
         }
         val statement = call.getString("statement")
         if (!call.data.has("values")) {
-            val msg = "Run: Must provide an Array of values"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("Run: Must provide an Array of values")
         }
         val values = call.getArray("values")
         if (values == null) {
-            val msg = "Run: Must provide an Array of values"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("Run: Must provide an Array of values")
         }
         val transaction = call.getBoolean("transaction", true) ?: true
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1099,27 +1026,19 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun query(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "Query: Must provide a database name"
-            rHandler.retValues(call, JSArray(), msg)
-            return
+            throw PluginException("Query: Must provide a database name")
         }
         val dbName = call.getString("database")
         if (!call.data.has("statement")) {
-            val msg = "Query: Must provide a SQL statement"
-            rHandler.retValues(call, JSArray(), msg)
-            return
+            throw PluginException("Query: Must provide a SQL statement")
         }
         val statement = call.getString("statement")
         if (!call.data.has("values")) {
-            val msg = "Query: Must provide an Array of Strings"
-            rHandler.retValues(call, JSArray(), msg)
-            return
+            throw PluginException("Query: Must provide an Array of Strings")
         }
         val values = call.getArray("values")
         if (values == null) {
-            val msg = "Query: Must provide an Array of values"
-            rHandler.retValues(call, JSArray(), msg)
-            return
+            throw PluginException("Query: Must provide an Array of values")
         }
         val readOnly = call.getBoolean("readonly", false) ?: false
         val impl = implementation
@@ -1139,9 +1058,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun getTableList(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "getTableList: Must provide a database name"
-            rHandler.retValues(call, JSArray(), msg)
-            return
+            throw PluginException("getTableList: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1168,9 +1085,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isDBExists(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "isDBExists: Must provide a database name"
-            rHandler.retResult(call, false, msg)
-            return
+            throw PluginException("isDBExists: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1197,9 +1112,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isDBOpen(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "isDBOpen: Must provide a database name"
-            rHandler.retResult(call, false, msg)
-            return
+            throw PluginException("isDBOpen: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1226,9 +1139,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun deleteDatabase(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "deleteDatabase: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("deleteDatabase: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1257,9 +1168,7 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("database")) {
-            val msg = "CreateSyncTable: Must provide a database name"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("CreateSyncTable: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1286,16 +1195,12 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun setSyncDate(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "SetSyncDate: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("SetSyncDate: Must provide a database name")
         }
         val dbName = call.getString("database")
 
         if (!call.data.has("syncdate")) {
-            val msg = "SetSyncDate : Must provide a sync date"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("SetSyncDate : Must provide a sync date")
         }
         val syncDate = call.getString("syncdate")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1322,9 +1227,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun getSyncDate(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "GetSyncDate : Must provide a database name"
-            rHandler.retSyncDate(call, 0L, msg)
-            return
+            throw PluginException("GetSyncDate : Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1351,21 +1254,15 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun addUpgradeStatement(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "AddUpgradeStatement: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("AddUpgradeStatement: Must provide a database name")
         }
         val dbName = call.getString("database")
         if (!call.data.has("upgrade")) {
-            val msg = "AddUpgradeStatement: Must provide an array with upgrade statement"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("AddUpgradeStatement: Must provide an array with upgrade statement")
         }
         val upgrade = call.getArray("upgrade")
         if (upgrade == null) {
-            val msg = "AddUpgradeStatement: Must provide an array with upgrade statement"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("AddUpgradeStatement: Must provide an array with upgrade statement")
         }
 
         val impl = implementation
@@ -1406,9 +1303,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun isJsonValid(call: PluginCall) {
         if (!call.data.has("jsonstring")) {
-            val msg = "IsJsonValid: Must provide a Stringify Json Object"
-            rHandler.retResult(call, false, msg)
-            return
+            throw PluginException("IsJsonValid: Must provide a Stringify Json Object")
         }
         val parsingData = call.getString("jsonstring")
         val impl = implementation
@@ -1436,9 +1331,7 @@ public class CapacitorSQLitePlugin : Plugin() {
         val retRes = JSObject()
         retRes.put("changes", -1)
         if (!call.data.has("jsonstring")) {
-            val msg = "ImportFromJson: Must provide a Stringify Json Object"
-            rHandler.retChanges(call, retRes, msg)
-            return
+            throw PluginException("ImportFromJson: Must provide a Stringify Json Object")
         }
         val parsingData = call.getString("jsonstring")
         val impl = implementation
@@ -1465,22 +1358,16 @@ public class CapacitorSQLitePlugin : Plugin() {
     public fun exportToJson(call: PluginCall) {
         val retObj = JSObject()
         if (!call.data.has("database")) {
-            val msg = "ExportToJson: Must provide a database name"
-            rHandler.retJSObject(call, retObj, msg)
-            return
+            throw PluginException("ExportToJson: Must provide a database name")
         }
         val dbName = call.getString("database")
         if (!call.data.has("jsonexportmode")) {
-            val msg = "ExportToJson: Must provide an export mode"
-            rHandler.retJSObject(call, retObj, msg)
-            return
+            throw PluginException("ExportToJson: Must provide an export mode")
         }
         val expMode = call.getString("jsonexportmode")
 
         if (expMode != "full" && expMode != "partial") {
-            val msg = "ExportToJson: Json export mode should be 'full' or 'partial'"
-            rHandler.retJSObject(call, retObj, msg)
-            return
+            throw PluginException("ExportToJson: Json export mode should be 'full' or 'partial'")
         }
         val readOnly = call.getBoolean("readonly", false) ?: false
         val encrypted = call.getBoolean("encrypted", false) ?: false
@@ -1502,9 +1389,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun deleteExportedRows(call: PluginCall) {
         if (!call.data.has("database")) {
-            val msg = "DeleteExportedRows: Must provide a database name"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("DeleteExportedRows: Must provide a database name")
         }
         val dbName = call.getString("database")
         val readOnly = call.getBoolean("readonly", false) ?: false
@@ -1555,9 +1440,7 @@ public class CapacitorSQLitePlugin : Plugin() {
     @PluginMethod
     public fun getFromHTTPRequest(call: PluginCall) {
         if (!call.data.has("url")) {
-            val msg = "GetFromHTTPRequest: Must provide a database url"
-            rHandler.retResult(call, null, msg)
-            return
+            throw PluginException("GetFromHTTPRequest: Must provide a database url")
         }
         val url = call.getString("url")
         val impl = implementation
