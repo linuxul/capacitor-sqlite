@@ -7,56 +7,59 @@ import Capacitor
 public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "CapacitorSQLitePlugin"
     public let jsName = "CapacitorSQLite"
+    // Every method is synchronous: the bridge calls them one after the other on its queue, so a statement sees the
+    // connections, transactions and upgrade statements of the calls made before it. Async methods would not keep
+    // that order.
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "echo", returnType: .promise),
-        CAPPluginMethod(name: "createConnection", returnType: .promise),
-        CAPPluginMethod(name: "closeConnection", returnType: .promise),
-        CAPPluginMethod(name: "createNCConnection", returnType: .promise),
-        CAPPluginMethod(name: "closeNCConnection", returnType: .promise),
-        CAPPluginMethod(name: "getNCDatabasePath", returnType: .promise),
-        CAPPluginMethod(name: "open", returnType: .promise),
-        CAPPluginMethod(name: "close", returnType: .promise),
-        CAPPluginMethod(name: "getUrl", returnType: .promise),
-        CAPPluginMethod(name: "getVersion", returnType: .promise),
-        CAPPluginMethod(name: "execute", returnType: .promise),
-        CAPPluginMethod(name: "executeSet", returnType: .promise),
-        CAPPluginMethod(name: "run", returnType: .promise),
-        CAPPluginMethod(name: "query", returnType: .promise),
-        CAPPluginMethod(name: "isDBExists", returnType: .promise),
-        CAPPluginMethod(name: "isDBOpen", returnType: .promise),
-        CAPPluginMethod(name: "deleteDatabase", returnType: .promise),
-        CAPPluginMethod(name: "importFromJson", returnType: .promise),
-        CAPPluginMethod(name: "isJsonValid", returnType: .promise),
-        CAPPluginMethod(name: "exportToJson", returnType: .promise),
-        CAPPluginMethod(name: "deleteExportedRows", returnType: .promise),
-        CAPPluginMethod(name: "createSyncTable", returnType: .promise),
-        CAPPluginMethod(name: "setSyncDate", returnType: .promise),
-        CAPPluginMethod(name: "getSyncDate", returnType: .promise),
-        CAPPluginMethod(name: "addUpgradeStatement", returnType: .promise),
-        CAPPluginMethod(name: "copyFromAssets", returnType: .promise),
-        CAPPluginMethod(name: "isDatabase", returnType: .promise),
-        CAPPluginMethod(name: "isNCDatabase", returnType: .promise),
-        CAPPluginMethod(name: "isTableExists", returnType: .promise),
-        CAPPluginMethod(name: "getDatabaseList", returnType: .promise),
-        CAPPluginMethod(name: "getTableList", returnType: .promise),
-        CAPPluginMethod(name: "getMigratableDbList", returnType: .promise),
-        CAPPluginMethod(name: "addSQLiteSuffix", returnType: .promise),
-        CAPPluginMethod(name: "deleteOldDatabases", returnType: .promise),
-        CAPPluginMethod(name: "moveDatabasesAndAddSuffix", returnType: .promise),
-        CAPPluginMethod(name: "checkConnectionsConsistency", returnType: .promise),
-        CAPPluginMethod(name: "isSecretStored", returnType: .promise),
-        CAPPluginMethod(name: "setEncryptionSecret", returnType: .promise),
-        CAPPluginMethod(name: "changeEncryptionSecret", returnType: .promise),
-        CAPPluginMethod(name: "clearEncryptionSecret", returnType: .promise),
-        CAPPluginMethod(name: "getFromHTTPRequest", returnType: .promise),
-        CAPPluginMethod(name: "checkEncryptionSecret", returnType: .promise),
-        CAPPluginMethod(name: "isInConfigEncryption", returnType: .promise),
-        CAPPluginMethod(name: "isInConfigBiometricAuth", returnType: .promise),
-        CAPPluginMethod(name: "isDatabaseEncrypted", returnType: .promise),
-        CAPPluginMethod(name: "beginTransaction", returnType: .promise),
-        CAPPluginMethod(name: "commitTransaction", returnType: .promise),
-        CAPPluginMethod(name: "rollbackTransaction", returnType: .promise),
-        CAPPluginMethod(name: "isTransactionActive", returnType: .promise)
+        .promise("echo", CapacitorSQLitePlugin.echo),
+        .promise("createConnection", CapacitorSQLitePlugin.createConnection),
+        .promise("closeConnection", CapacitorSQLitePlugin.closeConnection),
+        .promise("createNCConnection", CapacitorSQLitePlugin.createNCConnection),
+        .promise("closeNCConnection", CapacitorSQLitePlugin.closeNCConnection),
+        .promise("getNCDatabasePath", CapacitorSQLitePlugin.getNCDatabasePath),
+        .promise("open", CapacitorSQLitePlugin.open),
+        .promise("close", CapacitorSQLitePlugin.close),
+        .promise("getUrl", CapacitorSQLitePlugin.getUrl),
+        .promise("getVersion", CapacitorSQLitePlugin.getVersion),
+        .promise("execute", CapacitorSQLitePlugin.execute),
+        .promise("executeSet", CapacitorSQLitePlugin.executeSet),
+        .promise("run", CapacitorSQLitePlugin.run),
+        .promise("query", CapacitorSQLitePlugin.query),
+        .promise("isDBExists", CapacitorSQLitePlugin.isDBExists),
+        .promise("isDBOpen", CapacitorSQLitePlugin.isDBOpen),
+        .promise("deleteDatabase", CapacitorSQLitePlugin.deleteDatabase),
+        .promise("importFromJson", CapacitorSQLitePlugin.importFromJson),
+        .promise("isJsonValid", CapacitorSQLitePlugin.isJsonValid),
+        .promise("exportToJson", CapacitorSQLitePlugin.exportToJson),
+        .promise("deleteExportedRows", CapacitorSQLitePlugin.deleteExportedRows),
+        .promise("createSyncTable", CapacitorSQLitePlugin.createSyncTable),
+        .promise("setSyncDate", CapacitorSQLitePlugin.setSyncDate),
+        .promise("getSyncDate", CapacitorSQLitePlugin.getSyncDate),
+        .promise("addUpgradeStatement", CapacitorSQLitePlugin.addUpgradeStatement),
+        .promise("copyFromAssets", CapacitorSQLitePlugin.copyFromAssets),
+        .promise("isDatabase", CapacitorSQLitePlugin.isDatabase),
+        .promise("isNCDatabase", CapacitorSQLitePlugin.isNCDatabase),
+        .promise("isTableExists", CapacitorSQLitePlugin.isTableExists),
+        .promise("getDatabaseList", CapacitorSQLitePlugin.getDatabaseList),
+        .promise("getTableList", CapacitorSQLitePlugin.getTableList),
+        .promise("getMigratableDbList", CapacitorSQLitePlugin.getMigratableDbList),
+        .promise("addSQLiteSuffix", CapacitorSQLitePlugin.addSQLiteSuffix),
+        .promise("deleteOldDatabases", CapacitorSQLitePlugin.deleteOldDatabases),
+        .promise("moveDatabasesAndAddSuffix", CapacitorSQLitePlugin.moveDatabasesAndAddSuffix),
+        .promise("checkConnectionsConsistency", CapacitorSQLitePlugin.checkConnectionsConsistency),
+        .promise("isSecretStored", CapacitorSQLitePlugin.isSecretStored),
+        .promise("setEncryptionSecret", CapacitorSQLitePlugin.setEncryptionSecret),
+        .promise("changeEncryptionSecret", CapacitorSQLitePlugin.changeEncryptionSecret),
+        .promise("clearEncryptionSecret", CapacitorSQLitePlugin.clearEncryptionSecret),
+        .promise("getFromHTTPRequest", CapacitorSQLitePlugin.getFromHTTPRequest),
+        .promise("checkEncryptionSecret", CapacitorSQLitePlugin.checkEncryptionSecret),
+        .promise("isInConfigEncryption", CapacitorSQLitePlugin.isInConfigEncryption),
+        .promise("isInConfigBiometricAuth", CapacitorSQLitePlugin.isInConfigBiometricAuth),
+        .promise("isDatabaseEncrypted", CapacitorSQLitePlugin.isDatabaseEncrypted),
+        .promise("beginTransaction", CapacitorSQLitePlugin.beginTransaction),
+        .promise("commitTransaction", CapacitorSQLitePlugin.commitTransaction),
+        .promise("rollbackTransaction", CapacitorSQLitePlugin.rollbackTransaction),
+        .promise("isTransactionActive", CapacitorSQLitePlugin.isTransactionActive)
     ]
     private var implementation: CapacitorSQLite?
     private let modeList: [String] = ["no-encryption", "encryption", "secret",
@@ -86,7 +89,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - Echo
 
-    @objc func echo(_ call: CAPPluginCall) {
+    func echo(_ call: CAPPluginCall) {
         let value = call.getString("value") ?? ""
         if let retValue: String = implementation?.echo(value) {
             call.resolve([
@@ -97,7 +100,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsInConfigEncryption
 
-    @objc func isInConfigEncryption(_ call: CAPPluginCall) {
+    func isInConfigEncryption(_ call: CAPPluginCall) {
         var bRes: Bool = false
         if self.config?.iosIsEncryption == 1 {
             bRes = true
@@ -108,7 +111,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsInConfigBiometricAuth
 
-    @objc func isInConfigBiometricAuth(_ call: CAPPluginCall) {
+    func isInConfigBiometricAuth(_ call: CAPPluginCall) {
         var bRes: Bool = false
         if self.config?.biometricAuth == 1 {
             bRes = true
@@ -118,12 +121,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
     }
     // MARK: - IsDatabaseEncrypted
 
-    @objc func isDatabaseEncrypted(_ call: CAPPluginCall) {
+    func isDatabaseEncrypted(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call, ret: false,
-                message: "isDatabaseEncrypted: Must provide a database name")
-            return
+            throw CAPPluginError("isDatabaseEncrypted: Must provide a database name")
         }
         do {
             let res = try implementation?.isDatabaseEncrypted(dbName)
@@ -147,7 +147,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsSecretStored
 
-    @objc func isSecretStored(_ call: CAPPluginCall) {
+    func isSecretStored(_ call: CAPPluginCall) {
         do {
             let res = try implementation?.isSecretStored()
             var bRes: Bool = false
@@ -171,13 +171,10 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - SetEncryptionSecret
 
-    @objc func setEncryptionSecret(_ call: CAPPluginCall) {
+    func setEncryptionSecret(_ call: CAPPluginCall) throws {
 
         guard let passphrase = call.options["passphrase"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "SetEncryptionSecret: Must provide a passphrase")
-            return
+            throw CAPPluginError("SetEncryptionSecret: Must provide a passphrase")
         }
         do {
             try implementation?.setEncryptionSecret(passphrase: passphrase)
@@ -197,19 +194,13 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - ChangeEncryptionSecret
 
-    @objc func changeEncryptionSecret(_ call: CAPPluginCall) {
+    func changeEncryptionSecret(_ call: CAPPluginCall) throws {
 
         guard let passphrase = call.options["passphrase"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "ChangeEncryptionSecret: Must provide a passphrase")
-            return
+            throw CAPPluginError("ChangeEncryptionSecret: Must provide a passphrase")
         }
         guard let oldPassphrase = call.options["oldpassphrase"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "ChangeEncryptionSecret: Must provide the old passphrase")
-            return
+            throw CAPPluginError("ChangeEncryptionSecret: Must provide the old passphrase")
         }
         do {
             try implementation?.changeEncryptionSecret(call: call, passphrase: passphrase, oldPassphrase: oldPassphrase)
@@ -229,7 +220,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - ClearEncryptionSecret
 
-    @objc func clearEncryptionSecret(_ call: CAPPluginCall) {
+    func clearEncryptionSecret(_ call: CAPPluginCall) {
 
         do {
             try implementation?.clearEncryptionSecret()
@@ -249,13 +240,10 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - CheckEncryptionSecret
 
-    @objc func checkEncryptionSecret(_ call: CAPPluginCall) {
+    func checkEncryptionSecret(_ call: CAPPluginCall) throws {
 
         guard let passphrase = call.options["passphrase"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "CheckEncryptionSecret: Must provide a passphrase")
-            return
+            throw CAPPluginError("CheckEncryptionSecret: Must provide a passphrase")
         }
         do {
             let res = try implementation?
@@ -280,12 +268,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - CreateConnection
 
-    @objc func createConnection(_ call: CAPPluginCall) {
+    func createConnection(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "CreateConnection: Must provide a database name")
-            return
+            throw CAPPluginError("CreateConnection: Must provide a database name")
         }
         let version: Int = call.getInt("version") ?? 1
         let encrypted: Bool = call.getBool("encrypted") ?? false
@@ -294,8 +279,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
             var msg: String = "CreateConnection: inMode "
             msg.append("must be in['encryption',")
             msg.append("'secret','decryption']")
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError(msg)
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
 
@@ -326,12 +310,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - Open
 
-    @objc func open(_ call: CAPPluginCall) {
+    func open(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "Open: Must provide a database name")
-            return
+            throw CAPPluginError("Open: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -352,12 +333,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - Close
 
-    @objc func close(_ call: CAPPluginCall) {
+    func close(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "Close: Must provide a database name")
-            return
+            throw CAPPluginError("Close: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -378,12 +356,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - BeginTransaction
 
-    @objc func beginTransaction(_ call: CAPPluginCall) {
+    func beginTransaction(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "BeginTransaction: Must provide a database name")
-            return
+            throw CAPPluginError("BeginTransaction: Must provide a database name")
         }
         do {
             if let ret = try implementation?.beginTransaction(dbName) {
@@ -411,12 +386,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - CommitTransaction
 
-    @objc func commitTransaction(_ call: CAPPluginCall) {
+    func commitTransaction(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "CommitTransaction: Must provide a database name")
-            return
+            throw CAPPluginError("CommitTransaction: Must provide a database name")
         }
         do {
             if let ret = try implementation?.commitTransaction(dbName) {
@@ -444,12 +416,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - RollbackTransaction
 
-    @objc func rollbackTransaction(_ call: CAPPluginCall) {
+    func rollbackTransaction(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "RollbackTransaction: Must provide a database name")
-            return
+            throw CAPPluginError("RollbackTransaction: Must provide a database name")
         }
         do {
             if let ret = try implementation?.rollbackTransaction(dbName) {
@@ -477,12 +446,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsTransactionActive
 
-    @objc func isTransactionActive(_ call: CAPPluginCall) {
+    func isTransactionActive(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "IsTransactionActive: Must provide a database name")
-            return
+            throw CAPPluginError("IsTransactionActive: Must provide a database name")
         }
         do {
             let res = try implementation?.isTransactionActive(dbName)
@@ -506,12 +472,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - GetUrl
 
-    @objc func getUrl(_ call: CAPPluginCall) {
+    func getUrl(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "GetUrl: Must provide a database name")
-            return
+            throw CAPPluginError("GetUrl: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -542,12 +505,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - getVersion
 
-    @objc func getVersion(_ call: CAPPluginCall) {
+    func getVersion(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "getVersion: Must provide a database name")
-            return
+            throw CAPPluginError("getVersion: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -574,12 +534,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - Close Connection
 
-    @objc func closeConnection(_ call: CAPPluginCall) {
+    func closeConnection(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "CloseConnection: Must provide a database name")
-            return
+            throw CAPPluginError("CloseConnection: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -601,20 +558,14 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - CheckConsistency
 
-    @objc func checkConnectionsConsistency(_ call: CAPPluginCall) {
+    func checkConnectionsConsistency(_ call: CAPPluginCall) throws {
         guard let dbNames = call.options["dbNames"] as? [String] else {
-            retHandler.rResult(
-                call: call,
-                message: "CheckConnectionsConsistency: Must provide a " +
-                    "Connection Array")
-            return
+            throw CAPPluginError("CheckConnectionsConsistency: Must provide a " +
+                "Connection Array")
         }
         guard let openModes = call.options["openModes"] as? [String] else {
-            retHandler.rResult(
-                call: call,
-                message: "CheckConnectionsConsistency: Must provide a " +
-                    "OpenModes Array")
-            return
+            throw CAPPluginError("CheckConnectionsConsistency: Must provide a " +
+                "OpenModes Array")
         }
         do {
             let res = try implementation?
@@ -636,12 +587,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsDatabase
 
-    @objc func isDatabase(_ call: CAPPluginCall) {
+    func isDatabase(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call, ret: false,
-                message: "isDatabase: Must provide a database name")
-            return
+            throw CAPPluginError("isDatabase: Must provide a database name")
         }
         do {
             let res = try implementation?.isDatabase(dbName)
@@ -665,18 +613,12 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsTableExists
 
-    @objc func isTableExists(_ call: CAPPluginCall) {
+    func isTableExists(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call, ret: false,
-                message: "IsTableExists: Must provide a database name")
-            return
+            throw CAPPluginError("IsTableExists: Must provide a database name")
         }
         guard let tableName = call.options["table"] as? String else {
-            retHandler.rResult(
-                call: call, ret: false,
-                message: "IsTableExists: Must provide a table name")
-            return
+            throw CAPPluginError("IsTableExists: Must provide a table name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -702,13 +644,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - GetTableList
 
-    @objc func getTableList(_ call: CAPPluginCall) {
+    func getTableList(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rValues(
-                call: call, ret: [],
-                message: "getDatabaseList: Must provide a database name")
-            return
-
+            throw CAPPluginError("getDatabaseList: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -731,7 +669,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - getDatabaseList
 
-    @objc func getDatabaseList(_ call: CAPPluginCall) {
+    func getDatabaseList(_ call: CAPPluginCall) {
 
         do {
             let res = try implementation?.getDatabaseList() ?? []
@@ -752,7 +690,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - getMigratableDbList
 
-    @objc func getMigratableDbList(_ call: CAPPluginCall) {
+    func getMigratableDbList(_ call: CAPPluginCall) {
         let folderPath: String = call.getString("folderPath") ?? "default"
         do {
             let res = try implementation?
@@ -774,7 +712,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - addSQLiteSuffix
 
-    @objc func addSQLiteSuffix(_ call: CAPPluginCall) {
+    func addSQLiteSuffix(_ call: CAPPluginCall) {
         let folderPath: String = call.getString("folderPath") ?? "default"
         let dbJsList: JSArray = call.getArray("dbNameList") ?? []
         var dbList: [String] = []
@@ -803,7 +741,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - deleteOldDatabases
 
-    @objc func deleteOldDatabases(_ call: CAPPluginCall) {
+    func deleteOldDatabases(_ call: CAPPluginCall) {
         let folderPath: String = call.getString("folderPath") ?? "default"
         let dbJsList: JSArray = call.getArray("dbNameList") ?? []
         var dbList: [String] = []
@@ -832,7 +770,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - moveDatabasesAndAddSuffix
 
-    @objc func moveDatabasesAndAddSuffix(_ call: CAPPluginCall) {
+    func moveDatabasesAndAddSuffix(_ call: CAPPluginCall) {
         let folderPath: String = call.getString("folderPath") ?? "default"
         let dbJsList: JSArray = call.getArray("dbNameList") ?? []
         var dbList: [String] = []
@@ -861,22 +799,15 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - Execute
 
-    @objc func execute(_ call: CAPPluginCall) {
+    func execute(_ call: CAPPluginCall) throws {
 
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "Execute: Must provide a database name")
-            return
+            throw CAPPluginError("Execute: Must provide a database name")
         }
         let statements: String = call.getString("statements") ?? ""
         let transaction: Bool = call.getBool("transaction") ?? true
         if statements.count == 0 {
-            let msg: String = "Execute: Must provide raw SQL statements"
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: msg)
-            return
+            throw CAPPluginError("Execute: Must provide raw SQL statements")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -906,28 +837,19 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     // MARK: - ExecuteSet
-    // swiftlint:disable function_body_length
-    @objc func executeSet(_ call: CAPPluginCall) {
+    func executeSet(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "ExecuteSet: Must provide a database name")
-            return
+            throw CAPPluginError("ExecuteSet: Must provide a database name")
         }
         guard let set = call.options["set"] as? [[String: Any]] else {
             var msg: String = "ExecuteSet: "
             msg.append("Must provide a set of SQL statements")
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1], message: msg)
-            return
-
+            throw CAPPluginError(msg)
         }
         if set.count == 0 {
             var msg: String = "ExecuteSet: Must "
             msg.append("provide a non-empty set of SQL statements")
-            retHandler.rChanges(call: call, ret: ["changes": -1],
-                                message: msg)
-            return
+            throw CAPPluginError(msg)
         }
         for dict in set {
             let keys = dict.keys
@@ -936,9 +858,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
                 var msg: String = "ExecuteSet: "
                 msg.append("Must provide a set as Array of ")
                 msg.append("{statement,values}")
-                retHandler.rChanges(call: call, ret: ["changes": -1],
-                                    message: msg)
-                return
+                throw CAPPluginError(msg)
             }
         }
         let transaction: Bool = call.getBool("transaction") ?? true
@@ -971,33 +891,20 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
     }
-    // swiftlint:enable function_body_length
 
     // MARK: - Run
 
-    // swiftlint:disable function_body_length
-    @objc func run(_ call: CAPPluginCall) {
+    func run(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "Run: Must provide a database name")
-            return
+            throw CAPPluginError("Run: Must provide a database name")
         }
         guard let statement = call.options["statement"]
                 as? String else {
-            let msg: String =
-                "Run: Must provide a SQL statement"
-            retHandler.rChanges(call: call,
-                                ret: ["changes": -1],
-                                message: msg)
-            return
+            throw CAPPluginError("Run: Must provide a SQL statement")
         }
         guard let values = call.options["values"]
                 as? [Any] else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "Run: Must provide an Array of values")
-            return
+            throw CAPPluginError("Run: Must provide an Array of values")
         }
         let transaction: Bool = call.getBool("transaction") ?? true
         let readOnly: Bool = call.getBool("readonly") ?? false
@@ -1031,36 +938,27 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
     }
-    // swiftlint:enable function_body_length
 
     // MARK: - Query
 
-    // swiftlint:disable function_body_length
-    @objc func query(_ call: CAPPluginCall) {
+    func query(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
             var msg: String = "Query: "
             msg.append("Must provide a database name")
-            retHandler.rValues(call: call, ret: [],
-                               message: msg)
-            return
+            throw CAPPluginError(msg)
         }
 
         guard let statement = call.options["statement"]
                 as? String else {
             var msg: String = "Query: "
             msg.append("Must provide a query statement")
-            retHandler.rValues(call: call, ret: [],
-                               message: msg)
-            return
+            throw CAPPluginError(msg)
         }
         guard let values = call.options["values"] as? [Any] else {
             var msg: String = "Query: "
             msg.append("Must provide an Array of value")
-            retHandler.rValues(call: call, ret: [],
-                               message: msg)
-            return
-
+            throw CAPPluginError(msg)
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1091,17 +989,13 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
     }
-    // swiftlint:enable function_body_length
 
     // MARK: - isDBExists
 
-    @objc func isDBExists(_ call: CAPPluginCall) {
+    func isDBExists(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "isDBExists: Must provide a database name")
-            return
+            throw CAPPluginError("isDBExists: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1127,12 +1021,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsDBOpen
 
-    @objc func isDBOpen(_ call: CAPPluginCall) {
+    func isDBOpen(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rResult(
-                call: call, ret: false,
-                message: "idDBOpen: Must provide a database name")
-            return
+            throw CAPPluginError("idDBOpen: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1157,12 +1048,10 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - DeleteDatabase
 
-    @objc func deleteDatabase(_ call: CAPPluginCall) {
+    func deleteDatabase(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
-            let msg = "deleteDatabase: Must provide a database name"
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError("deleteDatabase: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1182,13 +1071,12 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsJsonValid
 
-    @objc func isJsonValid(_ call: CAPPluginCall) {
+    func isJsonValid(_ call: CAPPluginCall) throws {
         let parsingData: String = call.getString("jsonstring") ?? ""
         if parsingData.count == 0 {
             var msg: String = "IsJsonValid: "
             msg.append("Must provide a Stringify Json Object")
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError(msg)
         }
         do {
             try implementation?.isJsonValid(parsingData)
@@ -1207,13 +1095,11 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - ImportFromJson
 
-    @objc func importFromJson(_ call: CAPPluginCall) {
+    func importFromJson(_ call: CAPPluginCall) throws {
         let parsingData: String = call.getString("jsonstring") ?? ""
         if parsingData.count == 0 {
-            retHandler.rChanges(call: call, ret: ["changes": -1],
-                                message: "ImportFromJson: " +
-                                    "Must provide a Stringify Json Object")
-            return
+            throw CAPPluginError("ImportFromJson: " +
+                "Must provide a Stringify Json Object")
         }
         do {
             let res: [String: Int]  = try implementation?
@@ -1238,28 +1124,21 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - ExportToJson
 
-    @objc func exportToJson(_ call: CAPPluginCall) {
+    func exportToJson(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
-            let msg = "ExportToJson: Must provide a database name"
-            retHandler.rJsonSQLite(call: call, ret: [:],
-                                   message: msg)
-            return
+            throw CAPPluginError("ExportToJson: Must provide a database name")
         }
         let expMode: String = call.getString("jsonexportmode") ?? ""
         if expMode.count == 0 {
             var msg: String = "ExportToJson: "
             msg.append("Must provide an export mode")
-            retHandler.rJsonSQLite(call: call, ret: [:],
-                                   message: msg)
-            return
+            throw CAPPluginError(msg)
         }
         if expMode != "full" && expMode != "partial" {
             var msg: String = "ExportToJson : Json export "
             msg.append("mode should be 'full' or 'partial'")
-            retHandler.rJsonSQLite(call: call, ret: [:],
-                                   message: msg)
-            return
+            throw CAPPluginError(msg)
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         let encrypted: Bool = call.getBool("encrypted") ?? false
@@ -1287,12 +1166,10 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - DeleteExportedRows
 
-    @objc func deleteExportedRows(_ call: CAPPluginCall) {
+    func deleteExportedRows(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
-            let msg = "DeleteExportedRows: Must provide a database name"
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError("DeleteExportedRows: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1313,13 +1190,10 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - CreateSyncTable
 
-    @objc func createSyncTable(_ call: CAPPluginCall) {
+    func createSyncTable(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rChanges(
-                call: call, ret: ["changes": -1],
-                message: "createSyncTable: " +
-                    "Must provide a database name")
-            return
+            throw CAPPluginError("createSyncTable: " +
+                "Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1344,18 +1218,15 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - SetSyncDate
 
-    @objc func setSyncDate(_ call: CAPPluginCall) {
+    func setSyncDate(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
-            let msg = "setSyncDate: Must provide a database name"
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError("setSyncDate: Must provide a database name")
         }
         guard let syncDate = call.options["syncdate"] as? String else {
             var msg = "setSyncDate: Must provide a "
             msg.append("synchronization date")
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError(msg)
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1376,12 +1247,10 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - GetSyncDate
 
-    @objc func getSyncDate(_ call: CAPPluginCall) {
+    func getSyncDate(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
-            let msg = "getSyncDate: Must provide a database name"
-            retHandler.rSyncDate(call: call, ret: 0, message: msg)
-            return
+            throw CAPPluginError("getSyncDate: Must provide a database name")
         }
         let readOnly: Bool = call.getBool("readonly") ?? false
         do {
@@ -1404,18 +1273,14 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: addUpgradeStatement
 
-    @objc func addUpgradeStatement(_ call: CAPPluginCall) {
+    func addUpgradeStatement(_ call: CAPPluginCall) throws {
         guard let dbName = call.options["database"]
                 as? String else {
-            let msg = "deleteDatabase: Must provide a database name"
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError("deleteDatabase: Must provide a database name")
         }
         guard let upgrade = call.options["upgrade"] as?
                 [[String: Any]] else {
-            let msg = "Must provide an upgrade statement"
-            retHandler.rResult(call: call, message: msg)
-            return
+            throw CAPPluginError("Must provide an upgrade statement")
         }
         do {
             if let upgVersionDict: [Int: [String: Any]] = try
@@ -1450,7 +1315,7 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: copyFromAssets
 
-    @objc func copyFromAssets(_ call: CAPPluginCall) {
+    func copyFromAssets(_ call: CAPPluginCall) {
         let overwrite: Bool = call.getBool("overwrite") ?? true
 
         do {
@@ -1470,16 +1335,12 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - getNCDatabasePath
 
-    @objc func getNCDatabasePath(_ call: CAPPluginCall) {
+    func getNCDatabasePath(_ call: CAPPluginCall) throws {
         guard let folderPath = call.options["path"] as? String else {
-            retHandler.rPath(call: call, ret: "",
-                             message: "getNCDatabasePath: Must provide a folder path")
-            return
+            throw CAPPluginError("getNCDatabasePath: Must provide a folder path")
         }
         guard let dbName = call.options["database"] as? String else {
-            retHandler.rPath(call: call, ret: "",
-                             message: "getNCDatabasePath: Must provide a database name")
-            return
+            throw CAPPluginError("getNCDatabasePath: Must provide a database name")
         }
         do {
 
@@ -1506,12 +1367,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - CreateNCConnection
 
-    @objc func createNCConnection(_ call: CAPPluginCall) {
+    func createNCConnection(_ call: CAPPluginCall) throws {
         guard let dbPath = call.options["databasePath"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "CreateNCConnection: Must provide a database path")
-            return
+            throw CAPPluginError("CreateNCConnection: Must provide a database path")
         }
         let version: Int = call.getInt("version") ?? 1
         do {
@@ -1533,12 +1391,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - CloseNCConnection
 
-    @objc func closeNCConnection(_ call: CAPPluginCall) {
+    func closeNCConnection(_ call: CAPPluginCall) throws {
         guard let dbPath = call.options["databasePath"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "CloseNCConnection: Must provide a database path")
-            return
+            throw CAPPluginError("CloseNCConnection: Must provide a database path")
         }
         do {
             try implementation?.closeNCConnection(dbPath)
@@ -1558,12 +1413,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - IsNCDatabase
 
-    @objc func isNCDatabase(_ call: CAPPluginCall) {
+    func isNCDatabase(_ call: CAPPluginCall) throws {
         guard let dbPath = call.options["databasePath"] as? String else {
-            retHandler.rResult(
-                call: call, ret: false,
-                message: "isNCDatabase: Must provide a database path")
-            return
+            throw CAPPluginError("isNCDatabase: Must provide a database path")
         }
         do {
             let res = try implementation?.isNCDatabase(dbPath)
@@ -1587,12 +1439,9 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - GetFromHTTPRequest
 
-    @objc func getFromHTTPRequest(_ call: CAPPluginCall) {
+    func getFromHTTPRequest(_ call: CAPPluginCall) throws {
         guard let url = call.options["url"] as? String else {
-            retHandler.rResult(
-                call: call,
-                message: "GetFromHTTPRequest: Must provide a database url")
-            return
+            throw CAPPluginError("GetFromHTTPRequest: Must provide a database url")
         }
         DispatchQueue.global(qos: .background).async(execute: {
             do {
@@ -1637,7 +1486,6 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
 
     // MARK: - Handle Notifications
 
-    // swiftlint:disable no_space_in_method_call
     @objc func importJsonProgress(notification: Notification) {
         guard let info = notification.userInfo as? [String: Any] else { return }
         DispatchQueue.main.async {
@@ -1659,7 +1507,6 @@ public class CapacitorSQLitePlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
     }
-    // swiftlint:enable no_space_in_method_call
     private func sqliteConfig() -> SqliteConfig {
         var config = SqliteConfig()
         config.iosIsEncryption = 1
